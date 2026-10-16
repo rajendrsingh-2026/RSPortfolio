@@ -96,6 +96,27 @@ function PottedPlant({ className = '' }) {
   )
 }
 
+function handleContentScrollKeyDown(event) {
+  const { currentTarget, key } = event
+  const step = key === 'PageDown' || key === 'PageUp'
+    ? currentTarget.clientHeight * 0.85
+    : 40
+
+  if (key === 'ArrowDown' || key === 'PageDown') {
+    event.preventDefault()
+    currentTarget.scrollTop += step
+  } else if (key === 'ArrowUp' || key === 'PageUp') {
+    event.preventDefault()
+    currentTarget.scrollTop -= step
+  } else if (key === 'Home') {
+    event.preventDefault()
+    currentTarget.scrollTop = 0
+  } else if (key === 'End') {
+    event.preventDefault()
+    currentTarget.scrollTop = currentTarget.scrollHeight
+  }
+}
+
 function App() {
   const [page, setPage] = useState(0)
 
@@ -183,7 +204,7 @@ function App() {
           )}
 
           {page === 1 && (
-            <section className="page-content" aria-labelledby="about-title">
+            <section className="page-content" tabIndex={0} onKeyDown={handleContentScrollKeyDown} aria-labelledby="about-title">
               <div className="chapter-overline"><span>CHAPTER ONE</span><span>01</span></div>
               <h1 className="page-title" id="about-title">A bit about<br /><em>how I work.</em></h1>
               <p className="lead-copy">I’m a customer-focused Technical Support Engineer with a B.Sc. in Computer Science & Software Engineering.</p>
@@ -199,7 +220,7 @@ function App() {
           )}
 
           {page === 2 && (
-            <section className="page-content experience-page" aria-labelledby="experience-title">
+            <section className="page-content experience-page" tabIndex={0} onKeyDown={handleContentScrollKeyDown} aria-labelledby="experience-title">
               <div className="chapter-overline"><span>CHAPTER TWO</span><span>02</span></div>
               <h1 className="page-title" id="experience-title">The work<br /><em>so far.</em></h1>
               <div className="timeline">
@@ -222,7 +243,7 @@ function App() {
           )}
 
           {page === 3 && (
-            <section className="page-content" aria-labelledby="projects-title">
+            <section className="page-content" tabIndex={0} onKeyDown={handleContentScrollKeyDown} aria-labelledby="projects-title">
               <div className="chapter-overline"><span>CHAPTER THREE</span><span>03</span></div>
               <h1 className="page-title" id="projects-title">Made with<br /><em>curiosity.</em></h1>
               <div className="project-list">
@@ -243,7 +264,7 @@ function App() {
           )}
 
           {page === 4 && (
-            <section className="page-content education-page" aria-labelledby="education-title">
+            <section className="page-content education-page" tabIndex={0} onKeyDown={handleContentScrollKeyDown} aria-labelledby="education-title">
               <div className="chapter-overline"><span>CHAPTER FOUR</span><span>04</span></div>
               <h1 className="page-title" id="education-title">The tools<br /><em>and roots.</em></h1>
               <div className="education-block">
@@ -274,7 +295,7 @@ function App() {
           )}
 
           {page === 5 && (
-            <section className="back-cover-content" aria-labelledby="back-cover-title">
+            <section className="back-cover-content" tabIndex={0} onKeyDown={handleContentScrollKeyDown} aria-labelledby="back-cover-title">
               <p className="back-cover-edition">THE END · OR A NEW BEGINNING</p>
               <figure className="portrait-frame">
                 <img src={portrait} alt="Rajendr Singh outdoors in a green garden" />
@@ -294,15 +315,17 @@ function App() {
             </section>
           )}
 
-          <footer className="page-footer">
-            <button className="page-control" type="button" onClick={() => openPage(page - 1)} disabled={page === 0}>
-              <Arrow direction="left" /> <span>Previous</span>
-            </button>
-            <span className="folio">{String(page + 1).padStart(2, '0')} <i>/</i> {String(chapters.length).padStart(2, '0')}</span>
-            <button className="page-control page-control--next" type="button" onClick={() => openPage(page + 1)} disabled={page === chapters.length - 1}>
-              <span>{page === 0 ? 'Begin reading' : 'Next page'}</span> <Arrow />
-            </button>
-          </footer>
+          {page > 0 && page < chapters.length - 1 && (
+            <footer className="page-footer">
+              <button className="page-control" type="button" onClick={() => openPage(page - 1)}>
+                <Arrow direction="left" /> <span>Previous</span>
+              </button>
+              <span className="folio">{String(page + 1).padStart(2, '0')} <i>/</i> {String(chapters.length).padStart(2, '0')}</span>
+              <button className="page-control page-control--next" type="button" onClick={() => openPage(page + 1)} disabled={page === chapters.length - 1}>
+                <span>Next page</span> <Arrow />
+              </button>
+            </footer>
+          )}
         </article>
       </div>
 

@@ -5,7 +5,7 @@
 .reader {
   width: min(1120px, calc(100% - 64px));
   margin: 0 auto;
-  padding: 22px 0 18px;
+  padding: 22px 0 10px;
 }
 
 .skip-link {
@@ -116,7 +116,7 @@
   position: relative;
   display: grid;
   height: min(760px, calc(100svh - 170px));
-  min-height: 620px;
+  min-height: 580px;
   grid-template-columns: 245px minmax(0, 1fr);
   padding: 9px;
   border: 1px solid #203c29;
@@ -178,6 +178,10 @@
     linear-gradient(135deg, #ffffff08, transparent 45%, #10281912);
 }
 
+.book--cover .page-content {
+  overflow: hidden;
+}
+
 .book--cover .page-running-head,
 .book--cover .page-footer {
   display: none;
@@ -185,6 +189,8 @@
 
 .book--cover .cover-page {
   min-height: 0;
+  padding-top: 30px;
+  padding-bottom: 22px;
 }
 
 .book--cover .cover-edition,
@@ -426,10 +432,21 @@
   flex: 1;
   align-self: center;
   min-height: 0;
+  overflow-x: hidden;
   overflow-y: auto;
   padding: 37px 0 31px;
-  scrollbar-color: #98aa8a #edf0e7;
-  scrollbar-width: thin;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+}
+
+.page-content:focus-visible {
+  outline: 2px solid #315a39;
+  outline-offset: -2px;
+}
+
+.page-content::-webkit-scrollbar,
+.back-cover-content::-webkit-scrollbar {
+  display: none;
 }
 
 .chapter-overline {
@@ -546,7 +563,7 @@
 
 .cover-potted-plant {
   position: absolute;
-  right: -5px;
+  right: 0;
   bottom: 49px;
   width: 92px;
   height: 132px;
@@ -621,7 +638,7 @@
 }
 
 .cover-edition {
-  margin: 0 0 20px;
+  margin: 0 0 14px;
   color: #405241;
   font-size: 10px;
 }
@@ -652,7 +669,7 @@
   width: 230px;
   align-items: center;
   gap: 12px;
-  margin-top: 27px;
+  margin-top: 18px;
   color: #416a40;
   font-size: 16px;
 }
@@ -666,19 +683,19 @@
 }
 
 .cover-description {
-  margin: 21px 0 0;
+  margin: 14px 0 0;
   color: #30372e;
   font-family: var(--serif);
-  font-size: 26px;
-  line-height: 1.5;
+  font-size: 25px;
+  line-height: 1.4;
 }
 
 .cover-intro {
   max-width: 330px;
-  margin: 12px 0 21px;
+  margin: 9px 0 12px;
   color: #3f493e;
   font-size: 15px;
-  line-height: 1.75;
+  line-height: 1.6;
 }
 
 .read-button {
@@ -715,7 +732,7 @@
   justify-content: space-between;
   gap: 10px;
   margin-top: auto;
-  padding-top: 25px;
+  padding-top: 15px;
   border-top: 1px solid #dce2d2;
   color: #455442;
   font-size: 10px;
@@ -999,6 +1016,7 @@
 }
 
 .book--back-cover {
+  grid-template-columns: minmax(0, 1fr);
   padding: 13px;
   border-color: #203b28;
   background-color: #31553a;
@@ -1008,31 +1026,19 @@
   box-shadow: 0 24px 58px #263b2838, 0 3px 9px #263b2828, inset 0 0 0 2px #a9bc7a70;
 }
 
+.book--back-cover::before,
+.book--back-cover .book-index,
+.book--back-cover .page-running-head,
+.book--back-cover .page-footer {
+  display: none;
+}
+
 .book--back-cover .book-page {
-  padding: 25px 42px 19px;
+  padding: 25px 42px;
   background-color: transparent;
   background-image:
     radial-gradient(ellipse at 78% 82%, #a9c27a12, transparent 36%),
     linear-gradient(135deg, #ffffff08, transparent 45%, #10281912);
-}
-
-.book--back-cover .page-running-head {
-  border-color: #d8e6c355;
-  color: #f4f7e9;
-}
-
-.book--back-cover .page-footer {
-  border-color: #d8e6c355;
-}
-
-.book--back-cover .page-control,
-.book--back-cover .folio,
-.book--back-cover .folio i {
-  color: #f4f7e9;
-}
-
-.book--back-cover .page-control:disabled {
-  color: #c8d6bd;
 }
 
 .back-cover-content {
@@ -1049,8 +1055,13 @@
   overflow-y: auto;
   padding: 30px 0;
   color: #fffdf4;
-  scrollbar-color: #9db187 #34543a;
-  scrollbar-width: thin;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+}
+
+.back-cover-content:focus-visible {
+  outline: 2px solid #dcebb7;
+  outline-offset: -2px;
 }
 
 .back-cover-edition {
@@ -1170,18 +1181,19 @@
   .reader {
     width: min(100% - 34px, 620px);
     padding-top: 16px;
+    padding-bottom: 6px;
   }
 
   .book {
     grid-template-columns: 185px minmax(0, 1fr);
     height: min(740px, calc(100svh - 160px));
-    min-height: 620px;
+    min-height: 580px;
   }
 
   .book--cover {
     grid-template-columns: minmax(0, 1fr);
     height: min(740px, calc(100svh - 160px));
-    min-height: 620px;
+    min-height: 580px;
     padding: 8px;
   }
 
@@ -1190,8 +1202,9 @@
   }
 
   .book--back-cover {
+    grid-template-columns: minmax(0, 1fr);
     height: min(740px, calc(100svh - 160px));
-    min-height: 620px;
+    min-height: 580px;
     padding: 8px;
   }
 
@@ -1284,6 +1297,7 @@
   }
 
   .book--back-cover {
+    grid-template-columns: minmax(0, 1fr);
     height: min(780px, calc(100svh - 145px));
     min-height: 620px;
     padding: 7px;
@@ -1438,7 +1452,7 @@
   }
 
   .cover-potted-plant {
-    right: -4px;
+    right: 0;
     bottom: 49px;
     width: 63px;
     height: 93px;
