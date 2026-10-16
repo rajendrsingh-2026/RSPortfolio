@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Intercom } from '@intercom/messenger-js-sdk'
 import portrait from './assets/rajendr-portrait.jpeg'
 import './App.css'
 
@@ -119,6 +120,10 @@ function handleContentScrollKeyDown(event) {
 
 function App() {
   const [page, setPage] = useState(0)
+
+  useEffect(() => {
+    Intercom({ app_id: 't455tc1j' })
+  }, [])
 
   useEffect(() => {
     function handleKeyDown(event) {
