@@ -1,5 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Intercom } from '@intercom/messenger-js-sdk'
+import agenticAiCertificate from './assets/agentic-ai-certificate.jpeg'
+import azureFundamentalsBadge from './assets/azure-fundamentals-badge.png'
+import finLogo from './assets/fin-logo.png'
+import fiservLogo from './assets/fiserv-logo.webp'
+import fortinetOperatorBadge from './assets/fortinet-operator-badge.png'
+import gaisceAwardLogo from './assets/gaisce-award-logo.webp'
+import genpactLogo from './assets/genpact-logo.jpg'
+import leanSixSigmaLogo from './assets/lean-six-sigma.webp'
+import maynoothUniversityLogo from './assets/maynooth-university-logo.png'
+import museAwardLogo from './assets/muse-award.webp'
+import obrienFineFoodsLogo from './assets/obrien-fine-foods-logo.png'
 import portrait from './assets/rajendr-portrait.jpeg'
 import './App.css'
 
@@ -9,6 +20,7 @@ const experience = [
   {
     role: 'Technical Support Engineer',
     company: 'Fin (formerly Intercom)',
+    logo: finLogo,
     period: '18 Aug 2026 — Present',
     detail: 'Technical support for Fin’s customer experience platform: investigating product issues, helping customers find a way forward, and sharing clear findings with the teams who can resolve them.',
     current: true,
@@ -16,24 +28,28 @@ const experience = [
   {
     role: 'Senior Process Associate',
     company: 'Genpact · supporting Meta',
+    logo: genpactLogo,
     period: 'Jan 2025 — 2026',
     detail: 'Triaged 16+ daily issues across Meta Quest and the Twilight app. Reproduced faults, analysed logs and escalated structured findings. Resolved 95% independently and maintained 99%+ SLA compliance.',
   },
   {
     role: 'IT Support Engineer',
     company: 'O’Brien Fine Foods',
+    logo: obrienFineFoodsLogo,
     period: 'Aug 2024 — Dec 2024',
     detail: 'Supported 600+ users across Microsoft 365, Exchange Online, SharePoint, Teams, Entra ID and Intune. Resolved 10–15 incidents a day with 95%+ first-contact resolution and reduced licence spend by 5%.',
   },
   {
     role: 'Software Automation Engineer Intern',
     company: 'Fiserv',
+    logo: fiservLogo,
     period: 'Mar 2022 — Sep 2022',
     detail: 'Automated repetitive QA tasks with JIRA and Jenkins, ran test suites and documented findings within an Agile development team.',
   },
   {
     role: 'Computer Science Demonstrator',
     company: 'Maynooth University · part-time',
+    logo: maynoothUniversityLogo,
     period: 'Sep 2021 — May 2023',
     detail: 'Supported 100+ students in programming labs covering web development, databases, algorithms and object-oriented programming.',
   },
@@ -66,6 +82,18 @@ const skillGroups = [
   { label: 'Tools', items: 'Git · Jenkins · JIRA · Chrome DevTools · Postman · Godot' },
   { label: 'Cloud & support', items: 'Azure · Entra ID · Intune · Exchange Online · SharePoint · PowerShell' },
   { label: 'Practice', items: 'Agile / Scrum · ITIL basics · SLA management · QA · Technical documentation' },
+]
+
+const credentials = [
+  { logo: azureFundamentalsBadge, name: 'Microsoft Azure Fundamentals', detail: 'AZ-900' },
+  { logo: fortinetOperatorBadge, name: 'Fortinet Certified Associate', detail: 'FortiGate 7.4 Operator' },
+  { logo: agenticAiCertificate, name: 'Agentic AI', detail: 'Certificate' },
+  { logo: leanSixSigmaLogo, name: 'Lean & Six Sigma', detail: 'Beginner' },
+]
+
+const recognitions = [
+  { logo: museAwardLogo, name: 'MUSE Award', detail: 'Gold' },
+  { logo: gaisceAwardLogo, name: 'Gaisce Presidential Award', detail: 'Bronze' },
 ]
 
 function Arrow({ direction = 'right' }) {
@@ -120,6 +148,8 @@ function handleContentScrollKeyDown(event) {
 
 function App() {
   const [page, setPage] = useState(0)
+  const [pageScrollHint, setPageScrollHint] = useState(false)
+  const pageContentRef = useRef(null)
 
   useEffect(() => {
     Intercom({ app_id: 't455tc1j' })
@@ -136,6 +166,29 @@ function App() {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
+
+  useEffect(() => {
+    const content = pageContentRef.current
+    if (!content) return
+
+    function updateScrollHint() {
+      const hasMoreContent = content.scrollHeight > content.clientHeight + 12
+      const isNearBottom = content.scrollTop + content.clientHeight >= content.scrollHeight - 16
+      setPageScrollHint(hasMoreContent && !isNearBottom)
+    }
+
+    updateScrollHint()
+    content.addEventListener('scroll', updateScrollHint, { passive: true })
+    window.addEventListener('resize', updateScrollHint)
+    const observer = new ResizeObserver(updateScrollHint)
+    observer.observe(content)
+
+    return () => {
+      content.removeEventListener('scroll', updateScrollHint)
+      window.removeEventListener('resize', updateScrollHint)
+      observer.disconnect()
+    }
+  }, [page])
 
   function openPage(nextPage) {
     setPage(Math.max(0, Math.min(nextPage, chapters.length - 1)))
@@ -194,7 +247,7 @@ function App() {
           </div>
 
           {page === 0 && (
-            <section className="page-content cover-page" id="cover" aria-labelledby="cover-title">
+            <section ref={pageContentRef} className="page-content cover-page" id="cover" aria-labelledby="cover-title">
               <BotanicalSprig className="cover-botanical" />
               <PottedPlant className="cover-potted-plant" />
               <div className="cover-stamp">DUBLIN<br />IRELAND</div>
@@ -209,7 +262,7 @@ function App() {
           )}
 
           {page === 1 && (
-            <section className="page-content" tabIndex={0} onKeyDown={handleContentScrollKeyDown} aria-labelledby="about-title">
+            <section ref={pageContentRef} className="page-content" tabIndex={0} onKeyDown={handleContentScrollKeyDown} aria-labelledby="about-title">
               <div className="chapter-overline"><span>CHAPTER ONE</span><span>01</span></div>
               <h1 className="page-title" id="about-title">A bit about<br /><em>how I work.</em></h1>
               <p className="lead-copy">I’m a customer-focused Technical Support Engineer with a B.Sc. in Computer Science & Software Engineering.</p>
@@ -225,7 +278,7 @@ function App() {
           )}
 
           {page === 2 && (
-            <section className="page-content experience-page" tabIndex={0} onKeyDown={handleContentScrollKeyDown} aria-labelledby="experience-title">
+            <section ref={pageContentRef} className="page-content experience-page" tabIndex={0} onKeyDown={handleContentScrollKeyDown} aria-labelledby="experience-title">
               <div className="chapter-overline"><span>CHAPTER TWO</span><span>02</span></div>
               <h1 className="page-title" id="experience-title">The work<br /><em>so far.</em></h1>
               <div className="timeline">
@@ -237,7 +290,12 @@ function App() {
                         <h2>{job.role}</h2>
                         <span className="timeline-date">{job.period}</span>
                       </div>
-                      <p className="timeline-company">{job.company}</p>
+                      <div className="timeline-company-row">
+                        <span className={`company-logo-frame company-logo-frame--${index + 1}`} aria-hidden="true">
+                          <img className="company-logo" src={job.logo} alt="" />
+                        </span>
+                        <p className="timeline-company">{job.company}</p>
+                      </div>
                       <p className="timeline-detail">{job.detail}</p>
                     </div>
                   </section>
@@ -248,7 +306,7 @@ function App() {
           )}
 
           {page === 3 && (
-            <section className="page-content" tabIndex={0} onKeyDown={handleContentScrollKeyDown} aria-labelledby="projects-title">
+            <section ref={pageContentRef} className="page-content" tabIndex={0} onKeyDown={handleContentScrollKeyDown} aria-labelledby="projects-title">
               <div className="chapter-overline"><span>CHAPTER THREE</span><span>03</span></div>
               <h1 className="page-title" id="projects-title">Made with<br /><em>curiosity.</em></h1>
               <div className="project-list">
@@ -265,11 +323,12 @@ function App() {
                 ))}
               </div>
               <div className="page-note"><span className="note-rule" /><p>From computer vision to virtual worlds: building is one way I like to learn.</p></div>
+              <a className="project-profile-link" href="https://github.com/Slokers" target="_blank" rel="noreferrer">Explore my GitHub profile <span aria-hidden="true">↗</span></a>
             </section>
           )}
 
           {page === 4 && (
-            <section className="page-content education-page" tabIndex={0} onKeyDown={handleContentScrollKeyDown} aria-labelledby="education-title">
+            <section ref={pageContentRef} className="page-content education-page" tabIndex={0} onKeyDown={handleContentScrollKeyDown} aria-labelledby="education-title">
               <div className="chapter-overline"><span>CHAPTER FOUR</span><span>04</span></div>
               <h1 className="page-title" id="education-title">The tools<br /><em>and roots.</em></h1>
               <div className="education-block">
@@ -289,8 +348,30 @@ function App() {
                 </div>
               </div>
               <div className="awards-block">
-                <p className="section-label">CERTIFICATIONS & RECOGNITION</p>
-                <p>Microsoft AZ-900 · Fortinet FCA FortiGate 7.4 Operator · Agentic AI · Lean & Six Sigma (Beginner) · Gold MUSE Award · Bronze Gaisce Presidential Award</p>
+                <p className="section-label">CERTIFICATIONS</p>
+                <div className="credential-grid">
+                  {credentials.map((credential) => (
+                    <article className="credential-card" key={credential.name}>
+                      <span className="credential-art" aria-hidden="true">
+                        <img className="credential-image" src={credential.logo} alt="" />
+                      </span>
+                      <span className="credential-detail">{credential.detail}</span>
+                      <h3>{credential.name}</h3>
+                    </article>
+                  ))}
+                </div>
+                <p className="section-label recognition-label">RECOGNITION</p>
+                <div className="credential-grid credential-grid--recognition">
+                  {recognitions.map((recognition) => (
+                    <article className="credential-card credential-card--recognition" key={recognition.name}>
+                      <span className="credential-art" aria-hidden="true">
+                        <img className="credential-image" src={recognition.logo} alt="" />
+                      </span>
+                      <span className="credential-detail">{recognition.detail}</span>
+                      <h3>{recognition.name}</h3>
+                    </article>
+                  ))}
+                </div>
               </div>
               <div className="last-page-contact">
                 <p>Thanks for reading.</p>
@@ -300,7 +381,7 @@ function App() {
           )}
 
           {page === 5 && (
-            <section className="back-cover-content" tabIndex={0} onKeyDown={handleContentScrollKeyDown} aria-labelledby="back-cover-title">
+            <section ref={pageContentRef} className="back-cover-content" tabIndex={0} onKeyDown={handleContentScrollKeyDown} aria-labelledby="back-cover-title">
               <p className="back-cover-edition">THE END · OR A NEW BEGINNING</p>
               <figure className="portrait-frame">
                 <img src={portrait} alt="Rajendr Singh outdoors in a green garden" />
@@ -319,6 +400,8 @@ function App() {
               <BotanicalSprig className="back-cover-botanical" />
             </section>
           )}
+
+          {pageScrollHint && <div className="page-scroll-cue" aria-hidden="true">Scroll for more <span>↓</span></div>}
 
           {page > 0 && page < chapters.length - 1 && (
             <footer className="page-footer">
